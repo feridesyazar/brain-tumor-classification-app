@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Brain MRI Classification</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #182235;
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(35, 111, 255, 0.15),
+                    transparent 420px
+                ),
+                #f4f7fb;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 32px));
+            margin: auto;
+            padding: 55px 0 35px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 50px;
+            color: #0c4fd8;
+            background: #eaf2ff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        h1 {
+            margin: 17px 0 12px;
+            color: #0b1f3a;
+            font-size: clamp(38px, 7vw, 68px);
+            line-height: 1;
+        }
+
+        .subtitle {
+            max-width: 720px;
+            margin-bottom: 35px;
+            color: #687386;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            min-height: 470px;
+            padding: 28px;
+            border: 1px solid #dce3ed;
+            border-radius: 23px;
+            background: white;
+            box-shadow: 0 22px 55px rgba(19, 43, 79, 0.10);
+        }
+
+        .upload-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drop-zone {
+            min-height: 290px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            border: 2px dashed #b8c7dc;
+            border-radius: 18px;
+            background: #f9fbfe;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragging {
+            border-color: #176bff;
+            background: #eaf2ff;
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 16px;
+            border-radius: 17px;
+            color: white;
+            background: #176bff;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .drop-zone strong {
+            color: #0b1f3a;
+            font-size: 18px;
+        }
+
+        .drop-zone span {
+            margin-top: 8px;
+            color: #687386;
+        }
+
+        .drop-zone small {
+            margin-top: 18px;
+            color: #8a95a6;
+        }
+
+        .preview-box {
+            min-height: 290px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: #08101c;
+        }
+
+        .preview-box img {
+            width: 100%;
+            height: 290px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .remove-button {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            padding: 9px 13px;
+            border: none;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.92);
+            cursor: pointer;
+        }
+
+        .analyze-button {
+            width: 100%;
+            min-height: 53px;
+            margin-top: auto;
+            border: none;
+            border-radius: 13px;
+            color: white;
+            background: #176bff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-button:hover:not(:disabled) {
+            background: #0c4fd8;
+        }
+
+        .analyze-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        .error {
+            margin: 14px 0 0;
+            color: #c63636;
+        }
+
+        .result-card {
+            display: flex;
+            align-items: center;
+        }
+
+        .empty-result {
+            width: 100%;
+            color: #687386;
+            text-align: center;
+        }
+
+        .empty-result h2 {
+            color: #0b1f3a;
+        }
+
+        .circle {
+            width: 90px;
+            height: 90px;
+            margin: auto;
+            border: 10px solid #eaf2ff;
+            border-top-color: #176bff;
+            border-radius: 50%;
+        }
+
+        .result-content {
+            width: 100%;
+        }
+
+        .result-title {
+            color: #0c4fd8;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #predicted-label {
+            margin: 8px 0 30px;
+            color: #0b1f3a;
+            font-size: 48px;
+            text-transform: capitalize;
+        }
+
+        .confidence-row,
+        .probability-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .confidence-bar-background {
+            height: 13px;
+            overflow: hidden;
+            margin-top: 10px;
+            border-radius: 20px;
+            background: #e7edf5;
+        }
+
+        .confidence-bar {
+            width: 0;
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(
+                90deg,
+                #176bff,
+                #56a0ff
+            );
+            transition: width 0.5s;
+        }
+
+        .probability-list {
+            display: grid;
+            gap: 13px;
+            margin-top: 17px;
+        }
+
+        .probability-row {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #edf1f6;
+            text-transform: capitalize;
+        }
+
+        .probability-row span:last-child {
+            font-weight: bold;
+        }
+
+        .warning {
+            margin-top: 24px;
+            padding: 18px 20px;
+            border: 1px solid #f0d99e;
+            border-radius: 14px;
+            color: #67501d;
+            background: #fff9e8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 800px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                min-height: 420px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <span class="badge">
+            Deep Learning · MobileNetV2
+        </span>
+
+        <h1>Brain MRI Classification</h1>
+
+        <p class="subtitle">
+            Upload a brain MRI image to classify it as glioma,
+            meningioma, pituitary tumor or no tumor.
+        </p>
+
+        <section class="workspace">
+
+            <form id="prediction-form" class="card upload-card">
+
+                <label id="drop-zone" class="drop-zone">
+
+                    <input
+                        id="image-input"
+                        name="image"
+                        type="file"
+                        accept="image/png,image/jpeg"
+                        hidden
+                    >
+
+                    <div class="upload-icon">↑</div>
+
+                    <strong>Choose an MRI image</strong>
+
+                    <span>
+                        or drag and drop it here
+                    </span>
+
+                    <small>
+                        PNG, JPG or JPEG · Maximum 10 MB
+                    </small>
+
+                </label>
+
+                <div
+                    id="preview-box"
+                    class="preview-box"
+                    hidden
+                >
+                    <img
+                        id="preview-image"
+                        alt="Selected MRI image"
+                    >
+
+                    <button
+                        id="remove-button"
+                        class="remove-button"
+                        type="button"
+                    >
+                        Remove image
+                    </button>
+                </div>
+
+                <button
+                    id="analyze-button"
+                    class="analyze-button"
+                    type="submit"
+                    disabled
+                >
+                    Analyze MRI
+                </button>
+
+                <p
+                    id="error-message"
+                    class="error"
+                    hidden
+                ></p>
+
+            </form>
+
+            <section class="card result-card">
+
+                <div
+                    id="empty-result"
+                    class="empty-result"
+                >
+                    <div class="circle"></div>
+
+                    <h2>Prediction results</h2>
+
+                    <p>
+                        The model output will appear here.
+                    </p>
+                </div>
+
+                <div
+                    id="result-content"
+                    class="result-content"
+                    hidden
+                >
+                    <span class="result-title">
+                        Predicted class
+                    </span>
+
+                    <h2 id="predicted-label">—</h2>
+
+                    <div class="confidence-row">
+                        <span>Confidence</span>
+                        <strong id="confidence-value">—</strong>
+                    </div>
+
+                    <div class="confidence-bar-background">
+                        <div
+                            id="confidence-bar"
+                            class="confidence-bar"
+                        ></div>
+                    </div>
+
+                    <h3>Class probabilities</h3>
+
+                    <div
+                        id="probability-list"
+                        class="probability-list"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <section class="warning">
+            <strong>Educational use only.</strong>
+            This application is not a medical device and must not
+            be used for diagnosis or treatment decisions.
+        </section>
+
+    </main>
+
+    <script>
+        const form =
+            document.querySelector("#prediction-form");
+
+        const imageInput =
+            document.querySelector("#image-input");
+
+        const dropZone =
+            document.querySelector("#drop-zone");
+
+        const previewBox =
+            document.querySelector("#preview-box");
+
+        const previewImage =
+            document.querySelector("#preview-image");
+
+        const removeButton =
+            document.querySelector("#remove-button");
+
+        const analyzeButton =
+            document.querySelector("#analyze-button");
+
+        const errorMessage =
+            document.querySelector("#error-message");
+
+        const emptyResult =
+            document.querySelector("#empty-result");
+
+        const resultContent =
+            document.querySelector("#result-content");
+
+        let selectedFile = null;
+        let previewUrl = null;
+
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.hidden = false;
+        }
+
+
+        function clearError() {
+            errorMessage.textContent = "";
+            errorMessage.hidden = true;
+        }
+
+
+        function setFile(file) {
+            if (!file) {
+                return;
+            }
+
+            const allowedTypes = [
+                "image/png",
+                "image/jpeg"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                showError(
+                    "Please select a PNG, JPG or JPEG image."
+                );
+
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showError(
+                    "The image is too large. Maximum size is 10 MB."
+                );
+
+                return;
+            }
+
+            clearError();
+
+            selectedFile = file;
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+
+            previewUrl = URL.createObjectURL(file);
+
+            previewImage.src = previewUrl;
+
+            previewBox.hidden = false;
+            dropZone.hidden = true;
+            analyzeButton.disabled = false;
+        }
+
+
+        function removeImage() {
+            selectedFile = null;
+            imageInput.value = "";
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+
+            previewImage.removeAttribute("src");
+
+            previewBox.hidden = true;
+            dropZone.hidden = false;
+            analyzeButton.disabled = true;
+
+            clearError();
+        }
+
+
+        function showResult(data) {
+            const label =
+                data.label.replaceAll("_", " ");
+
+            document.querySelector(
+                "#predicted-label"
+            ).textContent = label;
+
+            document.querySelector(
+                "#confidence-value"
+            ).textContent = data.confidence + "%";
+
+            document.querySelector(
+                "#confidence-bar"
+            ).style.width = data.confidence + "%";
+
+            const probabilityList =
+                document.querySelector(
+                    "#probability-list"
+                );
+
+            probabilityList.innerHTML = "";
+
+            data.probabilities.forEach(item => {
+                const row =
+                    document.createElement("div");
+
+                row.className = "probability-row";
+
+                const labelElement =
+                    document.createElement("span");
+
+                const valueElement =
+                    document.createElement("span");
+
+                labelElement.textContent =
+                    item.label.replaceAll("_", " ");
+
+                valueElement.textContent =
+                    item.probability + "%";
+
+                row.appendChild(labelElement);
+                row.appendChild(valueElement);
+
+                probabilityList.appendChild(row);
+            });
+
+            emptyResult.hidden = true;
+            resultContent.hidden = false;
+        }
+
+
+        imageInput.addEventListener(
+            "change",
+            function () {
+                setFile(imageInput.files[0]);
+            }
+        );
+
+
+        removeButton.addEventListener(
+            "click",
+            removeImage
+        );
+
+
+        ["dragenter", "dragover"].forEach(
+            eventName => {
+                dropZone.addEventListener(
+                    eventName,
+                    function (event) {
+                        event.preventDefault();
+
+                        dropZone.classList.add(
+                            "dragging"
+                        );
+                    }
+                );
+            }
+        );
+
+
+        ["dragleave", "drop"].forEach(
+            eventName => {
+                dropZone.addEventListener(
+                    eventName,
+                    function (event) {
+                        event.preventDefault();
+
+                        dropZone.classList.remove(
+                            "dragging"
+                        );
+                    }
+                );
+            }
+        );
+
+
+        dropZone.addEventListener(
+            "drop",
+            function (event) {
+                setFile(
+                    event.dataTransfer.files[0]
+                );
+            }
+        );
+
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+                event.preventDefault();
+
+                if (!selectedFile) {
+                    return;
+                }
+
+                clearError();
+
+                analyzeButton.disabled = true;
+                analyzeButton.textContent =
+                    "Analyzing...";
+
+                const formData =
+                    new FormData();
+
+                formData.append(
+                    "image",
+                    selectedFile
+                );
+
+                try {
+                    const response =
+                        await fetch(
+                            "/predict",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+                    const data =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.error ||
+                            "Prediction failed."
+                        );
+                    }
+
+                    showResult(data);
+
+                } catch (error) {
+                    showError(error.message);
+
+                } finally {
+                    analyzeButton.disabled = false;
+                    analyzeButton.textContent =
+                        "Analyze MRI";
+                }
+            }
+        );
+    </script>
+</body>
+</html>
