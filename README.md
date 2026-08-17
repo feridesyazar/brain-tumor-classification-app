@@ -1,23 +1,17 @@
-# MLOps Projects
+# Brain Tumor Classification App
 
-A collection of selected end-to-end MLOps projects, including model development, API integration and cloud deployment.
+An AI-powered web application for classifying brain tumor MRI images using a trained deep learning model.
 
-## Featured Projects
+## Features
 
-### 1. Salary Prediction API
-
-Machine learning application for predicting salaries through a deployed API.
-
-- Deployment: Render
-- [View Repository](https://github.com/feridesyazar/salary-prediction-api)
-
-### 2. Skin Cancer Classification App
-
-Deep learning application for classifying skin cancer images.
-
-- Deployment: Hugging Face
-- [View Repository](https://github.com/feridesyazar/skin-cancer-classification-app)
+- Upload a brain MRI image
+- Classify the image using a trained model
+- Display the prediction result through a web interface
 
 ## Technologies
 
-Python, Machine Learning, Deep Learning, APIs, Docker, GitHub, Render and Hugging Face.
+Python, Flask, TensorFlow, HTML, CSS, GitHub and Render.
+
+## Deployment
+
+The application is configured for deployment as a web service on Render.
