@@ -2,44 +2,45 @@
 
 An AI-powered web application for classifying **brain tumor MRI images** using a trained deep learning model.
 
-The application analyzes uploaded MRI images and predicts one of four supported classes.
+The application allows users to upload an MRI image and receive a predicted tumor class together with a confidence score. The project demonstrates an end-to-end computer vision workflow, from image preprocessing and deep learning inference to web deployment.
 
-## 🚀 Live Demos
+## Live Demo
 
-### 🤗 Hugging Face Spaces
+### Hugging Face Spaces
 
-👉 [Open the Brain Tumor MRI Classifier on Hugging Face](https://huggingface.co/spaces/ferides/brain-tumor-classification-app)
+[Open the Brain Tumor MRI Classifier on Hugging Face](https://huggingface.co/spaces/ferides/brain-tumor-classification-app)
 
-### 🌐 Render
+### Render
 
-👉 [Open the Brain Tumor MRI Classifier on Render](https://brain-tumor-mri-classifier-6t98.onrender.com)
+[Open the Brain Tumor MRI Classifier on Render](https://brain-tumor-mri-classifier-6t98.onrender.com)
 
-> The free Render instance may take a short time to start after a period of inactivity.
+> The Render instance may require a short startup time after a period of inactivity.
 
-## 🩺 Supported Classes
+## Supported Classes
 
-The model can classify MRI images into the following categories:
+The model classifies MRI images into four categories:
 
 - Glioma
 - Meningioma
 - No Tumor
 - Pituitary Tumor
 
-## ✨ Features
+## Features
 
-- Upload a brain MRI image
-- Analyze the image using a trained deep learning model
-- Display the predicted MRI class
-- Show prediction confidence
+- Upload brain MRI images
+- Deep learning-based image classification
+- Prediction of four MRI classes
+- Confidence score display
 - Interactive web interface
 - Clinical-style user interface
-- Deployment on Hugging Face Spaces and Render
+- Deployment on Hugging Face Spaces
+- Deployment on Render
 
-## 🧠 Model
+## Model
 
 The application uses a trained **TensorFlow / Keras deep learning model** for MRI image classification.
 
-The prediction workflow is:
+The prediction workflow follows this general process:
 
 ```text
 MRI Image
@@ -48,12 +49,14 @@ Image Preprocessing
     ↓
 Deep Learning Model
     ↓
-Classification
+Class Prediction
+    ↓
+Confidence Score
     ↓
 Prediction Result
 ```
 
-## 🛠 Technologies
+## Technologies
 
 - Python
 - TensorFlow
@@ -65,7 +68,16 @@ Prediction Result
 - Hugging Face Spaces
 - Render
 
-## 📁 Project Structure
+## Application Workflow
+
+1. The user uploads a brain MRI image.
+2. The image is prepared for model inference.
+3. The trained neural network processes the image.
+4. The model calculates prediction probabilities.
+5. The most likely MRI class is selected.
+6. The result and confidence score are displayed in the web interface.
+
+## Key Project Files
 
 ```text
 brain-tumor-classification-app/
@@ -73,34 +85,50 @@ brain-tumor-classification-app/
 ├── app.py
 ├── class_names.json
 ├── requirements.txt
+├── README.md
 ├── .gitignore
-├── .python-version
-├── LICENSE
-└── README.md
+└── deployment-related files
 ```
 
-Additional deployment-related files may also be included in the repository.
+The repository contains the application code and configuration required for deployment. Trained model files are used by the deployed application.
 
-The trained `.keras` model files are hosted with the deployed application.
-
-## 🔍 Example Prediction
+## Example Prediction
 
 ```text
 Prediction: Glioma
 Confidence: 98.xx%
 ```
 
-The exact prediction depends on the uploaded MRI image.
+Prediction results depend on the uploaded MRI image and the model output.
 
-## 🎯 Project Purpose
+## Deployment
 
-This project demonstrates an end-to-end computer vision workflow combining:
+The application is available through two deployment environments:
 
-**Artificial Intelligence • Deep Learning • Medical Image Classification • Web Deployment**
+**Hugging Face Spaces**  
+Used to provide an interactive Gradio-based AI application.
 
-It was developed as an educational, demonstration and portfolio project.
+**Render**  
+Used as an additional live web deployment of the application.
 
-## ⚠️ Disclaimer
+This setup demonstrates how a machine learning model can be integrated into a web interface and deployed as an accessible online application.
+
+## Project Purpose
+
+This project demonstrates practical experience with:
+
+- Computer Vision
+- Deep Learning
+- Medical Image Classification
+- TensorFlow / Keras
+- Model Inference
+- Gradio Application Development
+- Cloud Deployment
+- GitHub-based Project Management
+
+The project was developed for educational, demonstration and portfolio purposes.
+
+## Disclaimer
 
 This application is intended for **educational and demonstration purposes only**.
 
