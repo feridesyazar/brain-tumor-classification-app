@@ -1,17 +1,53 @@
 # 🧠 Brain Tumor Classification App
 
-An AI-powered web application for classifying brain tumor MRI images using a trained deep learning model.
+An AI-powered web application for classifying **brain tumor MRI images** using a trained deep learning model.
 
-## Features
+The application analyzes uploaded MRI images and predicts one of four supported classes.
+
+## 🚀 Live Demos
+
+### 🤗 Hugging Face Spaces
+
+👉 [Open the Brain Tumor MRI Classifier on Hugging Face](https://huggingface.co/spaces/ferides/brain-tumor-classification-app)
+
+### 🌐 Render
+
+👉 [Open the Brain Tumor MRI Classifier on Render](https://brain-tumor-mri-classifier-6t98.onrender.com)
+
+> The free Render instance may take a short time to start after a period of inactivity.
+
+## 🩺 Supported Classes
+
+The model can classify MRI images into the following categories:
+
+- Glioma
+- Meningioma
+- No Tumor
+- Pituitary Tumor
+
+## ✨ Features
 
 - Upload a brain MRI image
-- Classify the image using a trained model
-- Display the prediction result through a web interface
+- Analyze the image using a trained deep learning model
+- Display the predicted MRI class
+- Show prediction confidence
+- Interactive web interface
+- Clinical-style user interface
+- Deployment on Hugging Face Spaces and Render
 
-## Technologies
+## 🧠 Model
 
-Python, Flask, TensorFlow, HTML, CSS, GitHub and Render.
+The application uses a trained **TensorFlow / Keras deep learning model** for MRI image classification.
 
-## Deployment
+The prediction workflow is:
 
-The application is configured for deployment as a web service on Render.
+```text
+MRI Image
+    ↓
+Image Preprocessing
+    ↓
+Deep Learning Model
+    ↓
+Classification
+    ↓
+Prediction Result
