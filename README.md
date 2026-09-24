@@ -1,4 +1,4 @@
-# Brain Tumor Classification App
+# 🧠 Brain Tumor Classification App
 
 An AI-powered web application for classifying brain tumor MRI images using a trained deep learning model.
 
