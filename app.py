@@ -3,7 +3,6 @@ from pathlib import Path
 
 import gradio as gr
 import numpy as np
-import spaces
 from tensorflow import keras
 
 
