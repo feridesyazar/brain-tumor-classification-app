@@ -51,3 +51,57 @@ Deep Learning Model
 Classification
     ↓
 Prediction Result
+```
+
+## 🛠 Technologies
+
+- Python
+- TensorFlow
+- Keras
+- NumPy
+- Pillow
+- Gradio
+- GitHub
+- Hugging Face Spaces
+- Render
+
+## 📁 Project Structure
+
+```text
+brain-tumor-classification-app/
+│
+├── app.py
+├── class_names.json
+├── requirements.txt
+├── .gitignore
+├── .python-version
+├── LICENSE
+└── README.md
+```
+
+Additional deployment-related files may also be included in the repository.
+
+The trained `.keras` model files are hosted with the deployed application.
+
+## 🔍 Example Prediction
+
+```text
+Prediction: Glioma
+Confidence: 98.xx%
+```
+
+The exact prediction depends on the uploaded MRI image.
+
+## 🎯 Project Purpose
+
+This project demonstrates an end-to-end computer vision workflow combining:
+
+**Artificial Intelligence • Deep Learning • Medical Image Classification • Web Deployment**
+
+It was developed as an educational, demonstration and portfolio project.
+
+## ⚠️ Disclaimer
+
+This application is intended for **educational and demonstration purposes only**.
+
+It is not a medical diagnostic tool and should not be used as a substitute for professional medical evaluation.
